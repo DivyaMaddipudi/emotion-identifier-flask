@@ -3,6 +3,7 @@ import os
 import sys
 from flask import request
 from random import randint
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 app = Flask(__name__)
 
@@ -13,28 +14,45 @@ def home():
 @app.route('/find-emotion', methods=['POST'])
 def result():
     
-    car_brand  = request.form.get('car_brand')
+    content  = request.form.get('content')
     
-    # You can validate the car brands. If someone is telling the wrong brand name, reply them with the wrong answer
+    flag, sentiment_meter = get_sentiment(content)   
     
-    address = get_sentiment()
-    
-    
-    user = {
-        'car_brand' : car_brand,
-        'address': address,
-        'ticket_amount' : ticket_amount 
+    result = {
+        'car_brand' : content,
+        'flag': flag,
+        'sentiment_meter' : sentiment_meter 
     }
     
     #return content
-    return render_template('result.html', user=user)
+    return render_template('result.html', result=result)
 
-def get_parked_place():
-    return '288, Spadina Road'
+sid = SentimentIntensityAnalyzer()
 
-def get_ticket_amount():
-    return 45
+def get_sentiment(sentence):
+        
+    print(sentence)
 
+    ss = sid.polarity_scores(sentence)
+    
+    #print(type(ss['pos']))
+
+    positive_meter = round((ss['pos'] * 10), 2) 
+    negative_meter = round((ss['neg'] * 10), 2)
+    
+    '''
+    for k in sorted(ss):
+        #print(ss)
+        print('{0}: {1}, '.format(k, ss[k]), end = '')
+    '''
+
+    print('positive : {0}, negative : {1}'.format(positive_meter, negative_meter))
+
+    if(positive_meter > negative_meter):
+        return True, positive_meter
+    else:
+        return False, negative_meter
+    
 if __name__ == '__main__':
     host = os.environ.get('IP', '127.0.0.1')
     port = int(os.environ.get('PORT', 5000))
