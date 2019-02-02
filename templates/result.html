@@ -11,9 +11,15 @@
         <br>
 
         {% if result.flag %}
-          <div style="color:green">Positive with {{result.sentiment_meter}}</div>
-        {% else %}
-        <div  style="color:red">Negative with {{result.sentiment_meter}}</div>
+          <div style="color:green">Positive {{result.sentiment_meter}}</div>
+
+          <img src="static/images/happy.png" height="50px" width="50px" />
+
+        {% else %}          
+
+        <div style="color:red">Negative {{result.sentiment_meter}}</div>
+          <img src="static/images/sad.png" height="50px" width="50px" />
+
         {% endif %}
 
 

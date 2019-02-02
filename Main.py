@@ -39,7 +39,7 @@ def get_sentiment(sentence):
 
     positive_meter = round((ss['pos'] * 10), 2) 
     negative_meter = round((ss['neg'] * 10), 2)
-    
+
     '''
     for k in sorted(ss):
         #print(ss)
